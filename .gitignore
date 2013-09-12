@@ -1,0 +1,6 @@
+*.svn*
+*.classpath
+*.project
+*.class
+*site.xml
+*.settings/*

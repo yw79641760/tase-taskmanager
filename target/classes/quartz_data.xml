@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_1_8.xsd"
+	version="1.8">
+
+	<pre-processing-commands>
+		<delete-jobs-in-group>*</delete-jobs-in-group>  <!-- clear all jobs in scheduler -->
+		<delete-triggers-in-group>*</delete-triggers-in-group> <!-- clear all triggers in scheduler -->
+	</pre-processing-commands>
+
+	<processing-directives>
+		<!-- if there are any jobs/trigger in scheduler of same name (as in this 
+			file), overwrite them -->
+		<overwrite-existing-data>true</overwrite-existing-data>
+		<!-- if there are any jobs/trigger in scheduler of same name (as in this 
+			file), and over-write is false, ignore them rather then generating an error -->
+		<ignore-duplicates>false</ignore-duplicates>
+	</processing-directives>
+
+	<schedule>
+		<job>
+			<name>ResourcePoolRefresherJob</name>
+			<group>DefaultGroup</group>
+			<description>update resources node map</description>
+			<job-class>com.softsec.tase.task.pool.ResourcePoolRefresher</job-class>
+			<volatility>true</volatility>
+			<durability>false</durability>
+			<recover>true</recover>
+		</job>
+
+		<trigger>
+			<cron>
+				<name>ResourcePoolRefresherJob_Trigger</name>
+				<group>DefaultTriggersGroup</group>
+				<job-name>ResourcePoolRefresherJob</job-name>
+				<job-group>DefaultGroup</job-group>
+				<cron-expression>0/15 * * ? * *</cron-expression>
+			</cron>
+		</trigger>
+		<job>
+			<name>FailedTaskRecyclerJob</name>
+			<group>DefaultGroup</group>
+			<description>reload failed tasks</description>
+			<job-class>com.softsec.tase.task.queue.FailedTaskRecycler</job-class>
+			<volatility>true</volatility>
+			<durability>false</durability>
+			<recover>true</recover>
+		</job>
+		<trigger>
+			<cron>
+				<name>FailedTaskRecyclerJob_Trigger</name>
+				<group>DefaultTriggersGroup</group>
+				<job-name>FailedTaskRecyclerJob</job-name>
+				<job-group>DefaultGroup</job-group>
+				<cron-expression>0 0/2 * ? * *</cron-expression>
+			</cron>
+		</trigger>
+	</schedule>
+</job-scheduling-data>
