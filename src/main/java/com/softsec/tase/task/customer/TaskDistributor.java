@@ -41,8 +41,8 @@ public class TaskDistributor {
 		if (context != null) {
 			distribute(task.getExecutorId().trim(), context);
 		} else {
-//			LOGGER.error("Failed to get context of task [ " + task.getTaskId() + " ].");
-//			throw new DistributionException("Failed to get context of task [ " + task.getTaskId() + " ].");
+			LOGGER.error("Failed to get context of task [ " + task.getTaskId() + " ].");
+			throw new DistributionException("Failed to get context of task [ " + task.getTaskId() + " ].");
 		}
 	}
 
@@ -130,28 +130,29 @@ public class TaskDistributor {
 		
 		Context context = null;
 		ProgramItem programItem = ProgramMapper.getInstance().getProgramItem(task.getProgramId());
-		if (programItem == null) {
-			return context;
-		}
+//		if (programItem == null) {
+//			return context;
+//		}
 		context = new Context();
 		context.setTaskId(task.getTaskId());
+		context.setPriority(task.getTaskPriority());
+		context.setJobPhase(task.getJobPhase());
 		if (task.getTaskOperationRequirement() != null) {
 			context.setJobExecutionMode(task.getTaskOperationRequirement().getJobExecutionMode());
 			context.setJobReturnMode(task.getTaskOperationRequirement().getJobReturnMode());
 			context.setTimeout(task.getTaskOperationRequirement().getTimeout());
 		}
 		context.setProgramId(task.getProgramId());
-		context.setPriority(task.getTaskPriority());
 		
-		context.setProgramName(programItem.getProgramName());
-		// TODO context bundle type ZIP or JAR
-		context.setScriptName(programItem.getScriptName());
-		context.setScriptPath(programItem.getScriptPath());
-		context.setScriptMd5(programItem.getScriptMd5());
-		context.setExecutableName(programItem.getExecutableName());
-		context.setExecutablePath(programItem.getExecutablePath());
-		context.setExecutableMd5(programItem.getExecutableMd5());
-		context.setEnvVariables(programItem.getEnvVariables());
+//		context.setProgramName(programItem.getProgramName());
+//		// TODO context bundle type ZIP or JAR
+//		context.setScriptName(programItem.getScriptName());
+//		context.setScriptPath(programItem.getScriptPath());
+//		context.setScriptMd5(programItem.getScriptMd5());
+//		context.setExecutableName(programItem.getExecutableName());
+//		context.setExecutablePath(programItem.getExecutablePath());
+//		context.setExecutableMd5(programItem.getExecutableMd5());
+//		context.setEnvVariables(programItem.getEnvVariables());
 		
 		context.setParameter(task.getTaskParameter());
 		
@@ -161,8 +162,6 @@ public class TaskDistributor {
 		context.setExecutableMd5("test");
 		context.setExecutableName("test");
 		context.setExecutablePath("text");
-		context.setJobExecutionMode(JobExecutionMode.EXCLUSIVE);
-		context.setJobPhase(task.getJobPhase());
 		context.setProgramId(1100000301L);
 		context.setProgramName("test");
 		context.setScriptMd5("test");

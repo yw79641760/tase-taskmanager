@@ -51,12 +51,12 @@ public class ResourcePoolRefresher implements Runnable, StatefulJob{
 		
 		LOGGER.info("Start wiping out obsolete nodes in resource pool ...");
 		
-		Map<Integer, ConcurrentSkipListSet<NodeItem>> fixedNodeMap = NodeMapper.getInstance().getDedicatedNodeMap();
+		Map<Integer, ConcurrentSkipListSet<NodeItem>> dedicatedNodeMap = NodeMapper.getInstance().getDedicatedNodeMap();
 		
-		for (Entry<Integer, ConcurrentSkipListSet<NodeItem>> fixedNodeEntry : fixedNodeMap.entrySet()) {
-			for (NodeItem nodeItem : fixedNodeEntry.getValue()) {
+		for (Entry<Integer, ConcurrentSkipListSet<NodeItem>> dedicatedNodeEntry : dedicatedNodeMap.entrySet()) {
+			for (NodeItem nodeItem : dedicatedNodeEntry.getValue()) {
 				if (System.currentTimeMillis() - nodeItem.getUpdatedTime() > RESOURCE_REFRESH_INTERVAL) {
-					fixedNodeEntry.getValue().remove(nodeItem);
+					dedicatedNodeEntry.getValue().remove(nodeItem);
 					LOGGER.info("Removing node : " + nodeItem.getNodeId());
 				} else {
 					LOGGER.info("Valid dedicated node [ " + nodeItem.getNodeId() + " ] updated at [ " + new Date(nodeItem.getUpdatedTime()) + " ] ");
@@ -64,12 +64,12 @@ public class ResourcePoolRefresher implements Runnable, StatefulJob{
 			}
 		}
 		
-		Map<NodeType, ConcurrentSkipListSet<NodeItem>> elasticNodeMap = NodeMapper.getInstance().getGeneralNodeMap();
+		Map<NodeType, ConcurrentSkipListSet<NodeItem>> generalNodeMap = NodeMapper.getInstance().getGeneralNodeMap();
 		
-		for (Entry<NodeType, ConcurrentSkipListSet<NodeItem>> elasticNodeEntry : elasticNodeMap.entrySet()) {
-			for (NodeItem nodeItem : elasticNodeEntry.getValue()) {
+		for (Entry<NodeType, ConcurrentSkipListSet<NodeItem>> generalNodeEntry : generalNodeMap.entrySet()) {
+			for (NodeItem nodeItem : generalNodeEntry.getValue()) {
 				if (System.currentTimeMillis() - nodeItem.getUpdatedTime() > RESOURCE_REFRESH_INTERVAL) {
-					elasticNodeEntry.getValue().remove(nodeItem);
+					generalNodeEntry.getValue().remove(nodeItem);
 					LOGGER.info("Removing node : " + nodeItem.getNodeId());
 				} else {
 					LOGGER.info("Valid general node [ " + nodeItem.getNodeId() + " ] updated at [ " + new Date(nodeItem.getUpdatedTime()) + " ] ");

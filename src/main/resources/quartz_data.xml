@@ -36,7 +36,8 @@
 				<group>DefaultTriggersGroup</group>
 				<job-name>ResourcePoolRefresherJob</job-name>
 				<job-group>DefaultGroup</job-group>
-				<cron-expression>0/15 * * ? * *</cron-expression>
+				<!-- <cron-expression>0/30 * * ? * *</cron-expression> -->
+				<cron-expression>0 0/2 * ? * *</cron-expression>
 			</cron>
 		</trigger>
 		<job>

@@ -47,7 +47,7 @@ public class LoadBalancingMatcher extends ResourceMatcher {
 			}
 		} 
 		task.setProgramId(1100000301L);
-		long programId = task.getProgramId();
+		Long programId = task.getProgramId();
 		if (programId == 0L) {
 			LOGGER.error("No program id scheduled for task : " + task.getTaskId());
 			throw new ResourceException("No program id scheduled for task : " + task.getTaskId());
@@ -74,13 +74,21 @@ public class LoadBalancingMatcher extends ResourceMatcher {
 		// if cluster type = DEDICATED, use DedicatedNodeMap<ProgramType, Set<Node>>
 		if (clusterType != null && clusterType.equals(ClusterType.DEDICATED)) {
 			
-			int programType = ProgramUtils.getProgramType(programId);
-			programType = 11000003;
+			Integer programType = ProgramUtils.getProgramType(programId);
 			selectedNodeSet = NodeMapper.getInstance().getDedicatedNodeSet(programType);
 			
 			// sift high performance resource node which grade >= 0
 			if (selectedNodeSet != null && selectedNodeSet.size() != 0) {
-				NavigableSet<NodeItem> preferredNodeSet = selectedNodeSet.headSet(new NodeItem(0), true);
+				
+				// calculate averageNodeGrade
+				int averageNodeGrade = 0;
+				for (NodeItem node : selectedNodeSet) {
+					averageNodeGrade += node.getGrade();
+				}
+				averageNodeGrade = (int) (averageNodeGrade / selectedNodeSet.size());
+				
+				// sift nodes who's grade is above the averageNodeGrade
+				NavigableSet<NodeItem> preferredNodeSet = selectedNodeSet.headSet(new NodeItem(averageNodeGrade), true);
 				if (preferredNodeSet != null && preferredNodeSet.size() != 0) {
 					nodeItem = preferredNodeSet.first();
 					if (nodeItem != null) {
@@ -102,10 +110,21 @@ public class LoadBalancingMatcher extends ResourceMatcher {
 			
 			selectedNodeSet = NodeMapper.getInstance().getGeneralNodeSet(nodeTypeCode);
 			if (selectedNodeSet != null && selectedNodeSet.size() != 0) {
-				// TODO
-				NavigableSet<NodeItem> preferredNodeSet = selectedNodeSet.headSet(new NodeItem(0), true);
-				nodeItem = selectedNodeSet.first();
-				NodeMapper.getInstance().updateGeneralNode(updateNodeItemPayload(nodeItem, 1));
+				
+				// sift nodes who's grade is above the averageNodeGrade
+				int averageNodeGrade = 0;
+				for (NodeItem node : selectedNodeSet) {
+					averageNodeGrade += node.getGrade();
+				}
+				averageNodeGrade = (int) (averageNodeGrade / selectedNodeSet.size());
+				NavigableSet<NodeItem> preferredNodeSet = selectedNodeSet.headSet(new NodeItem(averageNodeGrade), true);
+				if (preferredNodeSet != null && preferredNodeSet.size() != 0) {
+					nodeItem = selectedNodeSet.first();
+					if (nodeItem != null) {
+						NodeMapper.getInstance().updateGeneralNode(updateNodeItemPayload(nodeItem, 1));
+					}
+					preferredNodeSet = null;
+				}
 			} else {
 				LOGGER.error("No appropriate node scheduled for task : " + task.getTaskId());
 				throw new ResourceException("No appropriate node scheduled for task : " + task.getTaskId());

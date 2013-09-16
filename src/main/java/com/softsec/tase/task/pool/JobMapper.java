@@ -26,7 +26,7 @@ public class JobMapper {
 	/**
 	 * Map<JobType, JobCount>
 	 */
-	private Map<Long, AtomicInteger> jobCountMap	= new ConcurrentHashMap<Long, AtomicInteger>();
+	private Map<Long, AtomicInteger> jobCountMap = new ConcurrentHashMap<Long, AtomicInteger>();
 	
 	/**
 	 * Map<JobId, Map<TaskId, TaskStatus>>

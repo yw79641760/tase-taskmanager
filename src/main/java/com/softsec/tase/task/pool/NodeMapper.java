@@ -70,7 +70,7 @@ public class NodeMapper {
 	 * init dedicated node map with program type
 	 * @param programType
 	 */
-	public synchronized ConcurrentSkipListSet<NodeItem> initDedicatedNodeMapWithProgramType(int programType) {
+	public synchronized ConcurrentSkipListSet<NodeItem> initDedicatedNodeMapWithProgramType(Integer programType) {
 		if (dedicatedNodeMap.get(programType) == null) {
 			ConcurrentSkipListSet<NodeItem> nodeSet = new ConcurrentSkipListSet<NodeItem>(); 
 			dedicatedNodeMap.put(programType, nodeSet);
@@ -85,7 +85,7 @@ public class NodeMapper {
 	 * @param programType
 	 * @param nodeItem
 	 */
-	public synchronized void initDedicatedNodeMapWithNodeItem(int programType, NodeItem nodeItem) {
+	public synchronized void initDedicatedNodeMapWithNodeItem(Integer programType, NodeItem nodeItem) {
 		ConcurrentSkipListSet<NodeItem> nodeSet = dedicatedNodeMap.get(programType);
 		if (nodeSet == null) {
 			initDedicatedNodeMapWithProgramType(programType);
@@ -158,7 +158,7 @@ public class NodeMapper {
 	 * @param programType
 	 * @return selectedNodeSet
 	 */
-	public synchronized ConcurrentSkipListSet<NodeItem> getDedicatedNodeSet(int programType) {
+	public synchronized ConcurrentSkipListSet<NodeItem> getDedicatedNodeSet(Integer programType) {
 		ConcurrentSkipListSet<NodeItem> selectedNodeSet = dedicatedNodeMap.get(programType);
 		if (selectedNodeSet != null) {
 			// establish a new node set

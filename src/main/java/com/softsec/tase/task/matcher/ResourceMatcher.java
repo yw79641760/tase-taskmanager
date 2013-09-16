@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.softsec.tase.common.domain.schedule.Task;
 import com.softsec.tase.common.rpc.domain.job.JobResourceRequirement;
 import com.softsec.tase.common.util.domain.ProgramUtils;
-import com.softsec.tase.store.Configuration;
 import com.softsec.tase.store.domain.NodeItem;
-import com.softsec.tase.task.Constants;
 import com.softsec.tase.task.exception.ResourceException;
 import com.softsec.tase.task.pool.ProgramMapper;
 
@@ -47,7 +45,7 @@ public abstract class ResourceMatcher {
 			}
 		}
 		
-		int programType = ProgramUtils.getProgramType(task.getTaskId(), task.getJobPhase());
+		Integer programType = ProgramUtils.getProgramType(task.getTaskId(), task.getJobPhase());
 		// prefer to the latest program
 		int programCount = ProgramMapper.getInstance().getProgramCount(programType);
 		if (programCount == 0) {

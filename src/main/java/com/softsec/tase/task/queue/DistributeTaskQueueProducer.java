@@ -32,8 +32,6 @@ public class DistributeTaskQueueProducer implements Runnable {
 
 	private BlockingQueue<Task> queue;
 	
-	private static final PriorityBlockingQueue<Task> distributeTaskQueue = TaskQueue.getInstance().getDistributeTaskQueue();
-	
 	private volatile boolean stop = false;
 	
 	/**
@@ -78,7 +76,6 @@ public class DistributeTaskQueueProducer implements Runnable {
 							addToDistributeTaskQueue(task);
 							taskStorageService.saveTaskScheduling(task.getTaskId(), task.getJobPhase(), task.getProgramId(), task.getExecutorId());
 							taskStorageService.updateTaskStatus(task.getTaskId(), task.getJobPhase(), task.getTaskStatus());
-							taskStorageService = null;
 						}
 					}
 				} else {
@@ -96,7 +93,7 @@ public class DistributeTaskQueueProducer implements Runnable {
 					task.setSchedulingTime(task.getSchedulingTime() + 1);
 					queue.add(task);
 					LOGGER.error("Failed to schedule task [ " + task.getTaskId() + 
-							" ] for " + task.getSchedulingTime() + 1 + " times , added it into global task queue again : " + se.getMessage(), se);
+							" ] for " + task.getSchedulingTime() + " times , added it into global task queue again : " + se.getMessage(), se);
 				} else {
 					taskStorageService.updateTaskStatus(task.getTaskId(), task.getJobPhase(), JobStatus.SCHEDULING_FAILED);
 					LOGGER.error("Failed to schedule task [ " + task.getTaskId() + 
@@ -108,7 +105,7 @@ public class DistributeTaskQueueProducer implements Runnable {
 					task.setSchedulingTime(task.getSchedulingTime() + 1);
 					queue.add(task);
 					LOGGER.error("Failed to schedule task [ " + task.getTaskId() + 
-							" ] for " + task.getSchedulingTime() + 1 + " times , added it into global task queue again : " + re.getMessage(), re);
+							" ] for " + task.getSchedulingTime() + " times , added it into global task queue again : " + re.getMessage(), re);
 				} else {
 					taskStorageService.updateTaskStatus(task.getTaskId(), task.getJobPhase(), JobStatus.SCHEDULING_FAILED);
 					LOGGER.error("Failed to schedule task [ " + task.getTaskId() + 
@@ -162,8 +159,8 @@ public class DistributeTaskQueueProducer implements Runnable {
 	 * @param task
 	 */
 	private void addToDistributeTaskQueue(Task task) {
-		if (!distributeTaskQueue.contains(task)) {
-			distributeTaskQueue.put(task);
+		if (!TaskQueue.getInstance().getDistributeTaskQueue().contains(task)) {
+			TaskQueue.getInstance().getDistributeTaskQueue().put(task);
 			LOGGER.info("Task [ " + task.getTaskId() + " ] has been added into the distribute task queue.");
 		}
 	}

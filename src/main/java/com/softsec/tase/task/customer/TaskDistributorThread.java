@@ -52,12 +52,11 @@ public class TaskDistributorThread implements Runnable {
 					try {
 						taskStorageService.updateTaskStatus(task.getTaskId(), task.getJobPhase(), JobStatus.ISSUED);
 						taskStorageService.updateTaskTimestamp(task.getTaskId(), task.getJobPhase(), 0, System.currentTimeMillis(), 0, 0);
-						LOGGER.info("Distributed task [ " + task.getTaskId() + " ] to node [ " + task.getExecutorId() + " ]. ");
+						LOGGER.info("Succeed to update task [ " + task.getTaskId()
+								+ " ] at [ " + task.getJobPhase() + " ] to [ " + JobStatus.ISSUED + " ]. ");
 					} catch (DbUtilsException due) {
 						LOGGER.error("Failed to update task [ " + task.getTaskId()
 								+ " ] at [ " + task.getJobPhase() + " ] to [ " + JobStatus.ISSUED + " ]. ");
-					} finally {
-						taskStorageService = null;
 					}
 					
 					// add task to task monitor map

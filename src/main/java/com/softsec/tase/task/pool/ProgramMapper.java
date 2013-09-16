@@ -56,7 +56,7 @@ public class ProgramMapper {
 	 * @param programType
 	 * @param programCount
 	 */
-	public synchronized void initProgramCountMap(int programType, int programCount) {
+	public synchronized void initProgramCountMap(Integer programType, int programCount) {
 		if (programCountMap.get(programType) == null) {
 			programCountMap.put(programType, new AtomicInteger(programCount));
 		}
@@ -108,7 +108,7 @@ public class ProgramMapper {
 	 * @param programType
 	 * @return
 	 */
-	public synchronized int getProgramCount(int programType) {
+	public synchronized int getProgramCount(Integer programType) {
 		return programCountMap.get(programType).get();
 	}
 	
@@ -117,7 +117,7 @@ public class ProgramMapper {
 	 * @param programId
 	 * @return
 	 */
-	public synchronized ProgramItem getProgramItem(long programId) {
+	public synchronized ProgramItem getProgramItem(Long programId) {
 		ProgramItem programItem = programItemMap.get(programId);
 		if (programItem != null) {
 			return programItem;
